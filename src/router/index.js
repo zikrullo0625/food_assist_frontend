@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router';
 import Home from '@/components/Home.vue';
 import History from '@/components/History.vue';
 import Camera from '@/components/Camera.vue';
@@ -35,9 +35,9 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
-});
+})
 
 router.beforeEach(async (to, from, next) => {
     const isLoggedIn = await user.isLoggedIn();

@@ -8,7 +8,7 @@ export default defineConfig({
         vue(),
         tailwindcss()
     ],
-    base: '/food_assist_frontend/',
+    base: '/',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src')
