@@ -8,11 +8,11 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Отдаём статику
+// Статика
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // fallback для Vue Router History mode
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
