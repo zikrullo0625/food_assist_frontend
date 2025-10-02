@@ -13,26 +13,40 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 onMounted(async () => {
-  const hash = window.location.hash; // "#/oauth-success?token=abc123"
-  const params = new URLSearchParams(hash.split('?')[1]);
-  const token = params.get('token');
+  try {
+    console.log('--- OAuth Debug Start ---')
 
-  if (token) {
-    await user.setToken(token);
+    const hash = window.location.hash; // "#/oauth-success?token=abc123"
+    console.log('Current hash:', hash);
 
-    try {
+    const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+    console.log('Query string:', queryString);
+
+    const params = new URLSearchParams(queryString);
+    const token = params.get('token');
+    console.log('Token from URL:', token);
+
+    if (token) {
+      console.log('Setting token in localStorage...');
+      await user.setToken(token);
+
+      console.log('Fetching user data...');
       const { data } = await axios.get(import.meta.env.VITE_API_URL + '/auth/user');
+      console.log('User data received:', data);
       await user.setUser(data);
 
-      await router.replace('/'); // редирект на главную
-    } catch (error) {
-      console.error('Ошибка получения пользователя', error);
-      await user.clearToken();
-      router.replace('/login');
+      console.log('Redirecting to home...');
+      // await router.replace('/');
+    } else {
+      console.warn('No token found in URL, redirecting to login...');
+      // router.replace('/login');
     }
-  } else {
+
+    console.log('--- OAuth Debug End ---')
+  } catch (error) {
+    console.error('Error in OAuth callback:', error);
+    await user.clearToken();
     router.replace('/login');
   }
 });
-
 </script>
