@@ -13,21 +13,26 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 onMounted(async () => {
-  const url = new URL(window.location.href)
-  const token = url.searchParams.get('token')
+  const hash = window.location.hash; // "#/oauth-success?token=abc123"
+  const params = new URLSearchParams(hash.split('?')[1]);
+  const token = params.get('token');
 
   if (token) {
-    await user.setToken(token)
+    await user.setToken(token);
 
     try {
-      const { data } = await axios.get(import.meta.env.VITE_API_URL + '/auth/user')
-      await user.setUser(data)
+      const { data } = await axios.get(import.meta.env.VITE_API_URL + '/auth/user');
+      await user.setUser(data);
 
-      await router.replace('/')
+      await router.replace('/'); // редирект на главную
     } catch (error) {
-      console.error('Ошибка получения пользователя', error)
-      await user.clearToken()
+      console.error('Ошибка получения пользователя', error);
+      await user.clearToken();
+      router.replace('/login');
     }
+  } else {
+    router.replace('/login');
   }
-})
+});
+
 </script>
