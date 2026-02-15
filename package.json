@@ -3,12 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://zikrullo0625.github.io/repo-name",
+  "homepage": "https://zikrullo0625.github.io/food_assist_frontend",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "serve": "node server.js"
+    "serve": "node server.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.2",
