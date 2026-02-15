@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col items-center justify-center h-screen relative bg-[#4f5bf7]">
-    <!-- Loading State (for upload) -->
     <div v-if="appState === 'uploading'" class="absolute inset-0 flex flex-col justify-center items-center z-50">
       <h1 class="text-white text-center mb-4">
         Analyzing product...
@@ -11,14 +10,12 @@
       </iframe>
     </div>
 
-    <!-- Idle (placeholder) -->
     <div v-if="appState === 'idle'" class="relative w-screen h-screen flex items-center justify-center">
       <button
           @click="takePicture"
           class="bg-white text-[#4f5bf7] font-semibold py-2 px-4 rounded-xl shadow-md hover:scale-105 transition">
         Upload or Capture Photo
       </button>
-      <!-- скрытый input -->
       <input
           ref="fileInput"
           type="file"
@@ -29,7 +26,6 @@
       />
     </div>
 
-    <!-- Error -->
     <div v-if="appState === 'error'"
          class="absolute inset-0 flex flex-col justify-center items-center bg-[#4f5bf7] text-white text-center z-50">
       <button
@@ -40,13 +36,12 @@
       <img src="../assets/yellow-duck.gif" alt="Error GIF" class="w-64 h-64 mb-4" />
       <p class="mb-4 text-lg font-medium">{{ errorMessage }}</p>
       <button
-          @click="takePicture"
+          @click="window.location.reload()"
           class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-200">
         Try again
       </button>
     </div>
 
-    <!-- Out of scans -->
     <OutOfScansPromotions
         v-if="appState === 'outOfScans'"
         @scansAcquired="onScansAcquired"
@@ -60,6 +55,8 @@ import axios from 'axios';
 import router from "@/router";
 import OutOfScansPromotions from './OutOfScansPromotions.vue';
 
+import user from "@/composables/user";
+
 export default {
   name: 'CameraCapture',
   components: { OutOfScansPromotions },
@@ -70,6 +67,10 @@ export default {
     };
   },
   methods: {
+    redirectTo(url) {
+        this.$router.push(url);
+    },
+
     goBack() {
       router.push('/');
     },
@@ -79,7 +80,6 @@ export default {
     },
 
     takePicture() {
-      // триггерим скрытый input
       this.$refs.fileInput.click();
     },
 
@@ -102,6 +102,16 @@ export default {
       this.appState = 'uploading';
       const formData = new FormData();
       formData.append('image', file);
+      
+      const allergies = await user.getAllergies();
+      console.log('User allergies for request:', allergies);
+      
+      try {
+        formData.append('allergies', JSON.stringify(allergies));
+        console.log('FormData allergies appended:', formData.get('allergies'));
+      } catch (e) {
+        console.error('Error appending allergies to FormData:', e);
+      }
 
       try {
         const response = await axios.post(import.meta.env.VITE_API_URL + '/analyze', formData, {

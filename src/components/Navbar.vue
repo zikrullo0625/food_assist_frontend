@@ -1,52 +1,73 @@
 <template>
-  <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg rounded-t-xl z-50">
-    <div class="flex justify-between items-center h-16 px-6">
-      <button
+  <div class="navbar-container">
+    <mdui-navigation-bar
+        label-visibility="unlabeled"
+        :value="currentRoute"
+        class="fixed bottom-0 left-0 right-0 z-50 mdui-shadow-6"
+    >
+      <mdui-navigation-bar-item
+          value="home"
           @click="navigate('home')"
-          class="text-gray-500 p-2"
-          :class="{ 'text-blue-500': $route.name === 'home' }"
       >
-        <i class="fas fa-home text-xl"></i>
-      </button>
+        <mdui-icon-home slot="icon"></mdui-icon-home>
+        Home
+      </mdui-navigation-bar-item>
 
-      <button
+      <mdui-navigation-bar-item
+          value="stats"
           @click="navigate('stats')"
-          class="text-gray-500 p-2"
-          :class="{ 'text-blue-500': $route.name === 'stats' }"
       >
-        <i class="fas fa-chart-bar text-xl"></i>
-      </button>
+        <mdui-icon-insert-chart-outlined slot="icon"></mdui-icon-insert-chart-outlined>
+        Stats
+      </mdui-navigation-bar-item>
 
-      <button
-          @click="navigate('camera')"
-          class="bg-blue-500 text-white p-2 rounded-full w-12 h-12 shadow-md focus:outline-none"
-          :class="{ 'bg-blue-600': $route.name === 'camera' }"
+      <mdui-navigation-bar-item
+          value="camera"
+          style="visibility: hidden; pointer-events: none;"
       >
-        <i class="fas fa-camera text-xl"></i>
-      </button>
+        <mdui-icon-camera slot="icon"></mdui-icon-camera>
+      </mdui-navigation-bar-item>
 
-      <button
+      <mdui-navigation-bar-item
+          value="history"
           @click="navigate('history')"
-          class="text-gray-500 p-2"
-          :class="{ 'text-blue-500': $route.name === 'history' }"
       >
-        <i class="fas fa-history text-xl"></i>
-      </button>
+        <mdui-icon-history slot="icon"></mdui-icon-history>
+        History
+      </mdui-navigation-bar-item>
 
-      <button
+      <mdui-navigation-bar-item
+          value="settings"
           @click="navigate('settings')"
-          class="text-gray-500 p-2"
-          :class="{ 'text-blue-500': $route.name === 'settings' }"
       >
-        <i class="fas fa-cogs text-xl"></i>
-      </button>
-    </div>
+        <mdui-icon-settings slot="icon"></mdui-icon-settings>
+        Settings
+      </mdui-navigation-bar-item>
+    </mdui-navigation-bar>
+
+    <mdui-fab
+        class="center-fab"
+        @click="navigate('camera')"
+    >
+      <mdui-icon-camera slot="icon"></mdui-icon-camera>
+    </mdui-fab>
   </div>
 </template>
 
 <script>
+import '@mdui/icons/home.js';
+import '@mdui/icons/insert-chart-outlined.js';
+import '@mdui/icons/camera.js';
+import '@mdui/icons/history.js';
+import '@mdui/icons/settings.js';
+
 export default {
   name: 'Navbar',
+  computed: {
+    currentRoute() {
+      return this.$route.name;
+    }
+  },
   methods: {
     navigate(route) {
       this.$router.push({ name: route });
@@ -56,5 +77,22 @@ export default {
 </script>
 
 <style scoped>
-/* Добавить стили по необходимости */
+.navbar-container {
+  position: relative;
+}
+
+.mdui-navigation-bar {
+  background-color: #ffffff;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.center-fab {
+  position: fixed;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 51;
+  border-radius: 30%;
+}
 </style>

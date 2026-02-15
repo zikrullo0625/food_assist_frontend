@@ -1,50 +1,62 @@
 <template>
   <div class="flex items-center justify-center h-screen text-xl text-white">
-    Loading...
+    <div class="text-center">
+      <div class="mb-4">Loading...</div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import user from '@/composables/user.js'
 import axios from 'axios'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
+const debugInfo = ref([])
+
+const debug = (msg) => {
+  debugInfo.value.push(`[${new Date().toLocaleTimeString()}] ${msg}`)
+  console.log('[OAuthSuccess]', msg)
+}
 
 onMounted(async () => {
+  debug('OAuthSuccess mounted')
+  
   try {
-    console.log('--- OAuth Debug Start ---')
+    debug('--- OAuth Debug Start ---')
 
-    const hash = window.location.hash; // "#/oauth-success?token=abc123"
-    console.log('Current hash:', hash);
+    const tokenFromRoute = typeof route?.query?.token === 'string' ? route.query.token : null
+    debug(`Token from route.query: ${tokenFromRoute ? 'YES' : 'NO'}`)
 
-    const queryString = hash.includes('?') ? hash.split('?')[1] : '';
-    console.log('Query string:', queryString);
+    // Берем query-параметры из URL напрямую (web / fallback)
+    const params = new URLSearchParams(window.location.search)
+    const tokenFromWindow = params.get('token')
+    debug(`Token from window.location.search: ${tokenFromWindow ? 'YES' : 'NO'}`)
 
-    const params = new URLSearchParams(queryString);
-    const token = params.get('token');
-    console.log('Token from URL:', token);
+    const token = tokenFromRoute || tokenFromWindow
+    debug(`Final token decision: ${token ? 'YES' : 'NO'}`)
 
     if (token) {
-      console.log('Setting token in localStorage...');
+      debug('Setting token in localStorage...')
       await user.setToken(token);
 
-      console.log('Fetching user data...');
+      debug('Fetching user data...');
       const { data } = await axios.get(import.meta.env.VITE_API_URL + '/auth/user');
-      console.log('User data received:', data);
+      debug('User data received');
       await user.setUser(data);
 
-      console.log('Redirecting to home...');
-      // await router.replace('/');
+      debug('Redirecting to home...');
+      await router.replace('/');
     } else {
-      console.warn('No token found in URL, redirecting to login...');
-      // router.replace('/login');
+      debug('No token found, redirecting to login...');
+      router.replace('/login');
     }
 
-    console.log('--- OAuth Debug End ---')
+    debug('--- OAuth Debug End ---')
   } catch (error) {
-    console.error('Error in OAuth callback:', error);
+    debug(`Error: ${error.message}`)
     await user.clearToken();
     router.replace('/login');
   }

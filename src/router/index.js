@@ -1,4 +1,4 @@
-import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router';
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 import Home from '@/components/Home.vue';
 import History from '@/components/History.vue';
 import Camera from '@/components/Camera.vue';
@@ -34,8 +34,13 @@ const routes = [
     }
 ];
 
+const isNative = typeof window !== 'undefined' &&
+    window.Capacitor &&
+    typeof window.Capacitor.isNativePlatform === 'function' &&
+    window.Capacitor.isNativePlatform();
+
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: isNative ? createWebHashHistory() : createWebHistory(),
     routes,
 })
 
@@ -50,8 +55,11 @@ router.beforeEach(async (to, from, next) => {
 
 router.isReady().then(async () => {
     const token = await user.getToken();
-    if (!token) {
-        router.push({ name: 'login' });
+    const path = router.currentRoute.value?.path;
+    // Handle variations like /oauth-success or potentially .oauth-success if it leaks through
+    const isOauthCallback = path?.includes('oauth');
+    if (!token && !isOauthCallback) {
+        await router.push({ name: 'login' });
     }
 });
 

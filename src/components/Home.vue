@@ -3,7 +3,7 @@
     <h1 class="profile-name">FoodAssist</h1>
 
     <div class="content">
-      <img @click="goHome()" src="@/assets/example.jpg" alt="Example of a product" class="example-img" />
+      <img src="@/assets/example.jpg" alt="Example of a product" class="example-img" />
 
       <div class="instruction">
         <h1>How it works?</h1>

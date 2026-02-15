@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://zikrullo0625.github.io/repo-name",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,19 +11,28 @@
     "serve": "node server.js"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/core": "^8.0.2",
     "@dotlottie/player-component": "^2.7.12",
     "@fortawesome/fontawesome-free": "^7.0.1",
+    "@mdui/icons": "^1.0.3",
     "@tailwindcss/vite": "^4.1.14",
     "axios": "^1.12.2",
     "express": "^5.1.0",
     "lucide-vue-next": "^0.544.0",
+    "mdui": "^2.1.4",
     "tailwindcss": "^4.1.14",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1",
     "vue-sonner": "^2.0.9"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.0.2",
     "@vitejs/plugin-vue": "^6.0.1",
+    "gh-pages": "^6.3.0",
+    "typescript": "^5.9.3",
     "vite": "^7.1.7"
   }
 }

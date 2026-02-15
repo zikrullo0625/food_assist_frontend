@@ -5,10 +5,16 @@ import path from 'path'
 
 export default defineConfig({
     plugins: [
-        vue(),
+        vue({
+            template: {
+                compilerOptions: {
+                    isCustomElement: (tag) => tag.startsWith('mdui-'),
+                },
+            },
+        }),
         tailwindcss()
     ],
-    base: '/',
+    base: process.env.CAPACITOR ? './' : '/',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src')

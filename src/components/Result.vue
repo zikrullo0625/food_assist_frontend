@@ -36,13 +36,13 @@
 
       <!-- Карточки с concerns -->
       <div
-          v-if="concerns && concerns.length"
+          v-if="sortedConcerns && sortedConcerns.length"
           class="w-full space-y-3 animate-fadeInUp"
       >
         <h3 class="text-lg font-semibold text-white mb-2">Analysis:</h3>
 
         <div
-            v-for="(concern, index) in concerns"
+            v-for="(concern, index) in sortedConcerns"
             :key="index"
             class="w-full rounded-xl p-4 flex items-start gap-3 shadow-md"
             :class="getConcernCardClass(concern.type)"
@@ -99,6 +99,20 @@ export default {
     },
     concerns() {
       return this.resultData?.concerns ?? [];
+    },
+    sortedConcerns() {
+      const priority = {
+        'allergen': 0,
+        'harm': 1,
+        'description': 2,
+        'healthy': 3
+      };
+      
+      return [...this.concerns].sort((a, b) => {
+        const pA = priority[a.type] !== undefined ? priority[a.type] : 99;
+        const pB = priority[b.type] !== undefined ? priority[b.type] : 99;
+        return pA - pB;
+      });
     },
     scoreColorClass() {
       const score = this.healthScore;

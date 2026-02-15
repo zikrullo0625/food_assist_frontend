@@ -3,10 +3,12 @@ import axios from 'axios';
 const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
 const ENTERS_KEY = 'enters';
+const ALLERGIES_KEY = 'user_allergies';
 
 let inMemoryToken = null;
 let inMemoryUser = null;
 let enters = null;
+let allergies = null;
 
 export default {
     async setToken(token) {
@@ -133,5 +135,46 @@ export default {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
         return token;
+    },
+
+    async loadAllergies() {
+        if (allergies !== null) return allergies;
+
+        try {
+            const value = localStorage.getItem(ALLERGIES_KEY);
+            allergies = value ? JSON.parse(value) : [];
+        } catch {
+            allergies = [];
+        }
+
+        return allergies;
+    },
+
+    async getAllergies() {
+        if (allergies === null) {
+            await this.loadAllergies();
+        }
+        return allergies;
+    },
+
+    async addAllergy(allergy) {
+        if (allergies === null) {
+            await this.loadAllergies();
+        }
+        if (!allergies.includes(allergy)) {
+            allergies.push(allergy);
+            localStorage.setItem(ALLERGIES_KEY, JSON.stringify(allergies));
+        }
+    },
+
+    async removeAllergy(allergy) {
+        if (allergies === null) {
+            await this.loadAllergies();
+        }
+        const index = allergies.indexOf(allergy);
+        if (index > -1) {
+            allergies.splice(index, 1);
+            localStorage.setItem(ALLERGIES_KEY, JSON.stringify(allergies));
+        }
     }
 };
