@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "serve": "node server.js",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.2",

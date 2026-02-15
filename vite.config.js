@@ -14,7 +14,7 @@ export default defineConfig({
         }),
         tailwindcss()
     ],
-    base: process.env.CAPACITOR ? './' : '/',
+    base: "/food_assist_frontend/",
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src')
